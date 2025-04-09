@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-log-in',
@@ -21,6 +22,14 @@ export class LogInComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      // User is already logged in, redirect to dashboard
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+    
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -38,11 +47,33 @@ export class LogInComponent implements OnInit {
       return;
     }
 
-    // TODO: Implement actual login logic here
-    console.log('Login form submitted', this.loginForm.value);
+    // For demo purposes, we'll simulate a successful login
+    // In a real app, you would call your authentication service here
     
-    // Mock successful login, navigate to home or dashboard
-    // this.router.navigate(['/dashboard']);
+    // Create a mock user data object
+    const userData = {
+      id: 1,
+      email: this.loginForm.value.email,
+      firstName: 'Ahmed',
+      lastName: 'User',
+      // Add any other user data you need
+    };
+    
+    // Store user data in local storage
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', 'mock-jwt-token');
+    
+    // Show success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Login Successful',
+      text: 'Welcome back!',
+      showConfirmButton: false,
+      timer: 1500
+    }).then(() => {
+      // Navigate to dashboard
+      this.router.navigate(['/dashboard']);
+    });
   }
 
   togglePasswordVisibility(): void {
@@ -50,7 +81,25 @@ export class LogInComponent implements OnInit {
   }
 
   loginWithGoogle(): void {
-    // TODO: Implement Google login logic
-    console.log('Google login clicked');
+    // Simulate Google login 
+    const userData = {
+      id: 2,
+      email: 'google-user@gmail.com',
+      firstName: 'Google', 
+      lastName: 'User',
+      // Add any other user data you need
+    };
+    
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', 'mock-google-jwt-token');
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Google Login Successful',
+      showConfirmButton: false,
+      timer: 1500
+    }).then(() => {
+      this.router.navigate(['/dashboard']);
+    });
   }
 }

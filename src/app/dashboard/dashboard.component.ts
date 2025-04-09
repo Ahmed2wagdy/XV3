@@ -1,9 +1,8 @@
-// guest.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 interface Property {
@@ -21,21 +20,55 @@ interface Property {
 }
 
 @Component({
-  selector: 'app-guest',
+  selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './guest.component.html',
-  styleUrl: './guest.component.css'
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css'
 })
-export class GuestComponent implements OnInit {
+export class DashboardComponent implements OnInit {
   properties: Property[] = [];
   filteredProperties: Property[] = [];
   selectedFilter: string = 'All';
   searchQuery: string = '';
+  userName: string = 'User'; // Default username, will be updated in ngOnInit
   
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // User is not authenticated, redirect to login page
+      Swal.fire({
+        icon: 'warning',
+        title: 'Authentication Required',
+        text: 'Please log in to access this page',
+        timer: 2000,
+        showConfirmButton: false
+      }).then(() => {
+        this.router.navigate(['/log-in']);
+      });
+      return;
+    }
+  
+    // Get user info from local storage
+    const userDataString = localStorage.getItem('userData');
+    if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        if (userData.firstName && userData.lastName) {
+          this.userName = `${userData.firstName} ${userData.lastName}`;
+        } else if (userData.firstName) {
+          this.userName = userData.firstName;
+        } else if (userData.name) {
+          this.userName = userData.name;
+        }
+      } catch (e) {
+        console.error('Error parsing user data from localStorage', e);
+      }
+    }
+    
     // Initialize with mock data
     this.properties = [
       {
@@ -162,32 +195,59 @@ export class GuestComponent implements OnInit {
 
   // Method to toggle favorite 
   toggleFavorite(propertyId: number): void {
-    Swal.fire({ 
-      title: "Login first", 
-      text: "You need to login to continue",
-      icon: "info" 
-    });
-    
-    // This would be implemented with a service once user authentication is in place
+    const property = this.properties.find(p => p.id === propertyId);
+    if (property) {
+      property.isFavorite = !property.isFavorite;
+      
+      // Show success message 
+      Swal.fire({
+        position: "top-end",
+        icon: property.isFavorite ? "success" : "info",
+        title: property.isFavorite ? "Added to favorites" : "Removed from favorites",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      
+      // In a real app, you would call a service to update the favorite status in the backend
+    }
   }
   
   // Method to handle view property
   viewProperty(propertyId: number): void {
-    Swal.fire({ 
-      title: "Login first", 
-      text: "You need to login to continue",
-      icon: "info" 
-    });
+    // Navigate to property details page
+    this.router.navigate(['/property', propertyId]);
     
-    // This would be implemented with a service and routing once user authentication is in place
+    // In a real implementation, this would route to a property detail page
   }
   
-  // Method for accessing restricted features
-  showLoginAlert(): void {
-    Swal.fire({ 
-      title: "Login first", 
-      text: "You need to login to continue",
-      icon: "info" 
+  // Logout method
+  logout(): void {
+    // Show confirmation dialog
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#08227B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Clear local storage
+        localStorage.removeItem('userData');
+        localStorage.removeItem('token');
+        
+        // Redirect to guest page
+        this.router.navigate(['/']);
+        
+        Swal.fire({
+          title: "Logged out!",
+          text: "You have been successfully logged out",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
     });
   }
 }

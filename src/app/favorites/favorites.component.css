@@ -1,0 +1,27 @@
+.text-primary {
+    color: #08227B !important;
+  }
+  
+  .bg-primary {
+    background-color: #08227B !important;
+  }
+  
+  .btn-primary {
+    background-color: #08227B !important;
+    border-color: #08227B !important;
+  }
+  
+  .btn-outline-primary {
+    color: #08227B !important;
+    border-color: #08227B !important;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #08227B !important;
+    color: white !important;
+  }
+  
+  .property-img {
+    height: 180px;
+    object-fit: cover;
+  }

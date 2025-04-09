@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sign-up',
@@ -22,6 +23,14 @@ export class SignUpComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      // User is already logged in, redirect to dashboard
+      this.router.navigate(['/dashboard']);
+      return;
+    }
+    
     this.signupForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -61,11 +70,39 @@ export class SignUpComponent implements OnInit {
       return;
     }
 
-    // TODO: Implement actual signup logic here
-    console.log('Signup form submitted', this.signupForm.value);
+    // For demo purposes, we'll simulate a successful registration
+    // In a real app, you would call your registration service here
     
-    // Mock successful signup, navigate to login or dashboard
-    // this.router.navigate(['/log-in']);
+    // Get the form values
+    const formValues = this.signupForm.value;
+    
+    // Create a user data object from form values
+    const userData = {
+      id: Math.floor(Math.random() * 1000), // Generate a random ID for demo
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      phone: `${formValues.countryCode}${formValues.phone}`,
+      city: formValues.city,
+      dob: formValues.dob
+      // We don't store the password in localStorage for security reasons
+    };
+    
+    // Store user data in local storage
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', 'new-user-jwt-token');
+    
+    // Show success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Registration Successful',
+      text: 'Your account has been created!',
+      showConfirmButton: false,
+      timer: 1500
+    }).then(() => {
+      // Navigate to dashboard
+      this.router.navigate(['/dashboard']);
+    });
   }
 
   togglePasswordVisibility(): void {
@@ -77,7 +114,25 @@ export class SignUpComponent implements OnInit {
   }
 
   signupWithGoogle(): void {
-    // TODO: Implement Google signup logic
-    console.log('Google signup clicked');
+    // Simulate Google signup
+    const userData = {
+      id: Math.floor(Math.random() * 1000),
+      firstName: 'Google',
+      lastName: 'User',
+      email: 'google-user@gmail.com',
+      // Add any other default data for Google users
+    };
+    
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('token', 'google-signup-jwt-token');
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Google Signup Successful',
+      showConfirmButton: false,
+      timer: 1500
+    }).then(() => {
+      this.router.navigate(['/dashboard']);
+    });
   }
 }
