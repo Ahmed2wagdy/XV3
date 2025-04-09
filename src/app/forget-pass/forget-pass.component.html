@@ -1,0 +1,59 @@
+<div class="container">
+    <!-- Left side (Form inputs) -->
+    <div class="form-side">
+      <div class="form-container">
+        <h1 class="title">Forget Password</h1>
+        <p class="subtitle">Enter your Email or Phone number to reset your password.</p>
+  
+        <!-- Progress steps -->
+        <div class="steps-container">
+          <div class="step active">
+            <div class="step-number">1</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step">
+            <div class="step-number">2</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step">
+            <div class="step-number">3</div>
+          </div>
+        </div>
+  
+        <form (ngSubmit)="onSubmit()" [formGroup]="forgotPasswordForm">
+          <!-- Email or Phone label -->
+          <div class="input-label">
+            <h3>Email - Mobile Number</h3>
+          </div>
+  
+          <!-- Email/Phone input -->
+          <div class="form-group">
+            <input 
+              type="text" 
+              formControlName="emailOrPhone" 
+              placeholder="Email / Mobile Number"
+              class="form-control"
+              [ngClass]="{'invalid': submitted && f['emailOrPhone'].errors}"
+            >
+            <div *ngIf="submitted && f['emailOrPhone'].errors" class="error-message">
+              <div *ngIf="f['emailOrPhone'].errors['required']">Email or phone number is required</div>
+              <div *ngIf="f['emailOrPhone'].errors['invalidFormat']">Please enter a valid email or phone number</div>
+            </div>
+          </div>
+          
+          <!-- Submit button -->
+          <button type="submit" class="reset-btn">Reset Password</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Right side (Blue background with image) -->
+    <div class="image-side">
+      <div class="close-button">
+        <button class="close-btn">✕</button>
+      </div>
+      <div class="image-container">
+        <img src="../../assets/images/forgetpassword.png" alt="Forgot password illustration">
+      </div>
+    </div>
+  </div>
