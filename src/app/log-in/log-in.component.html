@@ -1,0 +1,75 @@
+<!-- Login Component  html  -->
+<div class="container">
+    <!-- Left side (Blue background with image) -->
+    <div class="image-side">
+      <div class="close-button">
+        <button class="close-btn">✕</button>
+      </div>
+      <div class="image-container">
+        <img src="../../assets/images/login.png" alt="Login illustration">
+      </div>
+    </div>
+  
+    <!-- Right side (Form inputs) -->
+    <div class="form-side">
+      <div class="form-container">
+        <h1 class="title">Login here</h1>
+        <p class="subtitle">Welcome back you've been missed!</p>
+  
+        <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+          <!-- Email input -->
+          <div class="form-group">
+            <input 
+              type="email" 
+              formControlName="email" 
+              placeholder="Email"
+              class="form-control"
+              [ngClass]="{'invalid': submitted && f['email'].errors}"
+            >
+            <div *ngIf="submitted && f['email'].errors" class="error-message">
+              <div *ngIf="f['email'].errors['required']">Email is required</div>
+              <div *ngIf="f['email'].errors['email']">Enter a valid email</div>
+            </div>
+          </div>
+  
+          <!-- Password input -->
+          <div class="form-group">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              formControlName="password" 
+              placeholder="Password"
+              class="form-control"
+              [ngClass]="{'invalid': submitted && f['password'].errors}"
+            >
+            <div *ngIf="submitted && f['password'].errors" class="error-message">
+              <div *ngIf="f['password'].errors['required']">Password is required</div>
+            </div>
+          </div>
+  
+          <!-- Forgot password link -->
+         <!-- Update this in log-in.component.html -->
+<div class="forgot-password">
+  <a [routerLink]="['/forget-pass']">Forgot your password?</a>
+</div>
+
+
+          <!-- Login button -->
+          <button type="submit" class="login-btn">Sign in</button>
+        </form>
+  
+        <!-- Google login -->
+        <div class="google-login">
+          <button class="google-btn">
+            <img src="../../assets/images/google.png" alt="Google">
+            Sign in with Google
+          </button>
+        </div>
+  
+        <!-- Sign up link -->
+        <div class="signup-link">
+          <span>Don't have an account?</span>
+          <a [routerLink]="['/sign-up']">Sign up</a>
+        </div>
+      </div>
+    </div>
+  </div>
